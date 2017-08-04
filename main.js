@@ -1,19 +1,26 @@
 var imageLoader = document.getElementById('imageLoader');
-    imageLoader.addEventListener('change', handleImage, false);
+    imageLoader.addEventListener('change', importImage, false);
 var canvas = document.getElementById('imageCanvas');
+canvas.addEventListener('click', stampImage)
 var ctx = canvas.getContext('2d');
+canvas.width = 500;
+canvas.height = 500;
+var imagePresent
+var img = new Image();
 
-
-function handleImage(e){
+function importImage(e){
     var reader = new FileReader();
     reader.onload = function(event){
-        var img = new Image();
-        img.onload = function(){
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img,0,0);
-        }
+        imagePresent = true
+        img.onclick = stampImage
         img.src = event.target.result;
     }
     reader.readAsDataURL(e.target.files[0]);
+}
+
+function stampImage(e){
+  if (!imagePresent) return
+  var x = e.clientX-(img.width/2);     // Get the horizontal coordinate
+  var y = e.clientY-(img.height/2);     // Get the vertical coordinate
+  ctx.drawImage(img,x,y);
 }
